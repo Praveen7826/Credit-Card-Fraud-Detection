@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # README.md
 
 # Credit Card Fraud Detection System
@@ -36,3 +37,6 @@ The system predicts whether a transaction is fraudulent or legitimate using a tr
 
 ```bash
 pip install -r requirements.txt
+=======
+# Credit-Card-Fraud-Detection
+>>>>>>> 9e1a7703f5b105c2ada2300da4085bbad6139187
