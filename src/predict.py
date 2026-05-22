@@ -1,5 +1,6 @@
 # src/predict.py
-
+''' 
+# old working file
 import joblib
 import numpy as np
 
@@ -21,3 +22,19 @@ def predict_transaction(input_data):
     else:
         return "Fraudulent Transaction"
 
+'''
+
+import numpy as np
+
+
+def predict_transaction(model, input_data):
+
+    input_array = np.array(input_data).reshape(1, -1)
+
+    probability = model.predict_proba(input_array)[0][1]
+
+    # Custom fraud threshold
+
+    prediction = 1 if probability > 0.30 else 0
+
+    return prediction, probability
