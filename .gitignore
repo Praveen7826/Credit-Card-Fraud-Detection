@@ -10,11 +10,14 @@ venv/
 .idea/
 .vscode/
 
-data/*.csv
-
-*.joblib
-*.ipynb
-
-models/
-
 .ipynb_checkpoints/
+
+data/
+output/
+
+testing_samples/creditcard.csv
+testing_samples/fraud_test_10mb.csv
+
+*.zip
+
+*.ipynb
