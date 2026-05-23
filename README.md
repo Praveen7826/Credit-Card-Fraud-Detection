@@ -55,6 +55,10 @@ The system analyzes transaction patterns and predicts whether a transaction is f
 
 ---
 
+# ⚙️ System Architecture
+
+![Architecture](assets/architecture.png)
+
 # 🚀 Features
 
 - 🔍 Real-time Fraud Prediction
@@ -121,6 +125,7 @@ Analytics & Visualization
 ```bash
 CREDIT-CARD-FRAUD-DETECTION/
 │
+├── assets/
 ├── data/
 ├── models/
 ├── screenshots/
@@ -164,7 +169,7 @@ CREDIT-CARD-FRAUD-DETECTION/
 ## 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/Credit-Card-Fraud-Detection.git
+git clone https://github.com/Praveen7826/Credit-Card-Fraud-Detection.git
 ```
 
 ## 2️⃣ Navigate to Project Folder
