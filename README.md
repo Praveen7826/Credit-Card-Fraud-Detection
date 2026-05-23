@@ -15,19 +15,19 @@ The system analyzes transaction patterns and predicts whether a transaction is f
 
 ## 🏠 Home Dashboard
 
-![Home Dashboard](screenshots/home.jpg)
+![Home Dashboard](screenshots/home.jpeg)
 
 ---
 
 ## 🔍 Fraud Prediction
 
-![Fraud Prediction](screenshots/fraud_prediction.jpg)
+![Fraud Prediction](screenshots/fraud_prediction.jpeg)
 
 ---
 
 ## ✅ Legitimate Transaction Prediction
 
-![Legitimate Prediction](screenshots/legitimate_prediction.jpg)
+![Legitimate Prediction](screenshots/legitimate_prediction.jpeg)
 
 ---
 
@@ -35,11 +35,11 @@ The system analyzes transaction patterns and predicts whether a transaction is f
 
 ### CSV Prediction - Top Section
 
-![CSV Top](screenshots/csv_top.jpg)
+![CSV Top](screenshots/csv_top.jpeg)
 
 ### CSV Prediction - Bottom Section
 
-![CSV Bottom](screenshots/csv_bottom.jpg)
+![CSV Bottom](screenshots/csv_bottom.jpeg)
 
 ---
 
@@ -47,11 +47,11 @@ The system analyzes transaction patterns and predicts whether a transaction is f
 
 ### Analytics Dashboard - Top Section
 
-![Analytics Top](screenshots/analytics_top.jpg)
+![Analytics Top](screenshots\analytics_bottom.jpeg)
 
 ### Analytics Dashboard - Bottom Section
 
-![Analytics Bottom](screenshots/analytics_bottom.jpg)
+![Analytics Bottom](screenshots/analytics_bottom.jpeg)
 
 ---
 
