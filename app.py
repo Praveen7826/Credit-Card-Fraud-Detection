@@ -183,7 +183,7 @@ elif menu == "🔍 Single Prediction":
 # CSV PREDICTION
 # ===================================================
 
-elif menu == "📂 FILES Prediction":
+elif menu == "📂 CSV Prediction":
 
     st.header("📂 Batch Fraud Detection")
 
