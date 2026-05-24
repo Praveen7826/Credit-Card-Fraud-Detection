@@ -29,7 +29,10 @@ custom_ui()
 # ---------------------------------------------------
 
 model = load_model()
+@st.cache_data
+def load_csv(file):
 
+    return pd.read_csv(file)
 # ---------------------------------------------------
 # TITLE
 # ---------------------------------------------------
@@ -211,7 +214,7 @@ elif menu == "📂 CSV Prediction":
 
         else:
 
-            df = pd.read_csv(uploaded_file)
+            df = load_csv(uploaded_file)
 
 
 
@@ -247,7 +250,7 @@ elif menu == "📂 CSV Prediction":
 
         # Prediction
 
-        BATCH_SIZE = 30000
+        BATCH_SIZE = 10000
 
         st.info(f"Processing dataset in batches of {BATCH_SIZE} rows.")
 
@@ -255,6 +258,8 @@ elif menu == "📂 CSV Prediction":
 
         all_predictions = []
         all_probabilities = []
+
+        progress_bar = st.progress(0)
 
         for start_idx in range(0, total_rows, BATCH_SIZE):
 
@@ -266,7 +271,13 @@ elif menu == "📂 CSV Prediction":
 
                 predictions = model.predict(batch_model)
 
-                probabilities = model.predict_proba(batch_model)[:, 1]
+                if total_rows > 20000:
+
+                    probabilities = [0] * len(predictions)
+
+                else:
+
+                    probabilities = model.predict_proba(batch_model)[:, 1]
 
             all_predictions.extend(predictions)
 
@@ -275,7 +286,7 @@ elif menu == "📂 CSV Prediction":
             st.success(f"Processed rows {start_idx} to {end_idx}")  
             progress = (end_idx / total_rows)
 
-            st.progress(progress)
+            progress_bar.progress(progress)
 
               
         
@@ -314,7 +325,7 @@ elif menu == "📂 CSV Prediction":
 
         st.subheader("📋 Prediction Results")
 
-        st.dataframe(df.head())
+        st.write(df.head())
         # ------------------------------------------
         # Fraud Transactions
         # ------------------------------------------
@@ -323,7 +334,7 @@ elif menu == "📂 CSV Prediction":
 
         fraud_df = df[df["Prediction"] == 1]
 
-        st.dataframe(fraud_df.head(20))
+        st.write(fraud_df.head(10))
         fraud_csv = fraud_df.to_csv(index=False).encode("utf-8")
 
         st.download_button(
@@ -341,7 +352,7 @@ elif menu == "📂 CSV Prediction":
 
         legit_df = df[df["Prediction"] == 0]
 
-        st.dataframe(legit_df.head(20))
+        st.write(legit_df.head(10))
         legit_csv = legit_df.to_csv(index=False).encode("utf-8")
 
         st.download_button(
@@ -378,8 +389,8 @@ elif menu == "📊 Analytics Dashboard":
     if uploaded_dashboard_file is not None:
         
         # Limit rows for faster analytics
-        df = pd.read_csv(uploaded_dashboard_file)
-        BATCH_SIZE = 30000
+        df = load_csv(uploaded_dashboard_file)
+        BATCH_SIZE = 10000
 
         st.info(f"Analytics processing in batches of {BATCH_SIZE} rows.")
 
@@ -464,7 +475,7 @@ elif menu == "📊 Analytics Dashboard":
 
         st.subheader("🔥 Correlation Heatmap")
 
-        heatmap_df = df.iloc[:BATCH_SIZE]
+        heatmap_df = df.sample(min(3000, len(df)))
 
         correlation = heatmap_df.corr(numeric_only=True)
         fig3 = px.imshow(
