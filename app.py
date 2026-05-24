@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
+
 from src.load_model import load_model
 from src.predict import predict_transaction
 from src.charts import fraud_pie_chart, probability_gauge
@@ -212,9 +213,11 @@ elif menu == "📂 CSV Prediction":
 
             df = pd.read_csv(uploaded_file)
 
+
+
         st.subheader("📄 Uploaded Dataset")
 
-        st.dataframe(df.head())
+        st.dataframe(df.head(10))
 
         # Expected model columns
 
@@ -244,18 +247,52 @@ elif menu == "📂 CSV Prediction":
 
         # Prediction
 
-        predictions = model.predict(df_model)
+        BATCH_SIZE = 30000
 
-        probabilities = model.predict_proba(df_model)[:, 1]
+        st.info(f"Processing dataset in batches of {BATCH_SIZE} rows.")
+
+        total_rows = len(df_model)
+
+        all_predictions = []
+        all_probabilities = []
+
+        for start_idx in range(0, total_rows, BATCH_SIZE):
+
+            end_idx = min(start_idx + BATCH_SIZE, total_rows)
+
+            batch_model = df_model.iloc[start_idx:end_idx]
+
+            with st.spinner(f"Processing rows {start_idx} to {end_idx}..."):
+
+                predictions = model.predict(batch_model)
+
+                probabilities = model.predict_proba(batch_model)[:, 1]
+
+            all_predictions.extend(predictions)
+
+            all_probabilities.extend(probabilities)
+
+            st.success(f"Processed rows {start_idx} to {end_idx}")  
+            progress = (end_idx / total_rows)
+
+            st.progress(progress)
+
+              
         
 
-        df["Prediction"] = predictions
+        df["Prediction"] = all_predictions
 
-        df["Fraud_Probability"] = probabilities
+        df["Fraud_Probability"] = all_probabilities
 
-        fraud_count = (predictions == 1).sum()
+        fraud_count = (df["Prediction"] == 1).sum()
+        fraud_percentage = (fraud_count / len(df)) * 100
 
-        legit_count = (predictions == 0).sum()
+        st.metric(
+            "Fraud Percentage",
+            f"{fraud_percentage:.2f}%"
+        )
+
+        legit_count = (df["Prediction"] == 0).sum()
 
         st.subheader("📊 Prediction Summary")
 
@@ -336,10 +373,16 @@ elif menu == "📊 Analytics Dashboard":
         "Upload Dataset for Analytics",
         type=["csv"]
     )
+    st.info("Large datasets may take some time to process.")
 
     if uploaded_dashboard_file is not None:
         
+        # Limit rows for faster analytics
         df = pd.read_csv(uploaded_dashboard_file)
+        BATCH_SIZE = 30000
+
+        st.info(f"Analytics processing in batches of {BATCH_SIZE} rows.")
+
         required_columns = [
             'Time',
             'V1', 'V2', 'V3', 'V4', 'V5',
@@ -352,13 +395,14 @@ elif menu == "📊 Analytics Dashboard":
 
         st.subheader("📄 Dataset Preview")
 
-        st.dataframe(df.head())
+        st.dataframe(df.head(10))
 
         # ------------------------------------------
         # Dataset Information
         # ------------------------------------------
 
         st.subheader("📌 Dataset Information")
+        
 
         col1, col2, col3 = st.columns(3)
 
@@ -380,7 +424,7 @@ elif menu == "📊 Analytics Dashboard":
 
             st.subheader("📊 Fraud Distribution")
 
-            class_counts = df["Class"].value_counts()
+            class_counts = df.iloc[:BATCH_SIZE]["Class"].value_counts()
 
             import plotly.express as px
 
@@ -404,25 +448,25 @@ elif menu == "📊 Analytics Dashboard":
             st.subheader("💰 Transaction Amount Distribution")
 
             fig2 = px.histogram(
-                df,
-                x="Amount",
-                nbins=50,
-                title="Transaction Amount Histogram"
+            df.iloc[:BATCH_SIZE],
+            x="Amount",
+            nbins=50,
+            title="Transaction Amount Histogram"
             )
 
             st.plotly_chart(
                 fig2,
                 use_container_width=True
             )
-
         # ------------------------------------------
         # Correlation Heatmap
         # ------------------------------------------
 
         st.subheader("🔥 Correlation Heatmap")
 
-        correlation = df.corr(numeric_only=True)
+        heatmap_df = df.iloc[:BATCH_SIZE]
 
+        correlation = heatmap_df.corr(numeric_only=True)
         fig3 = px.imshow(
             correlation,
             text_auto=False,
